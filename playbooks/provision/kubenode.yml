@@ -1,0 +1,9 @@
+---
+- name: Provision kubenodes.
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Print a debug message.
+      ansible.builtin.debug:
+        msg: Provisioning kubenodes.

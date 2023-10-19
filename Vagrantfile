@@ -27,6 +27,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       node.vm.hostname = "kubemaster#{i}"
       node.vm.network :private_network, ip: IP_NW + "#{MASTER_IP_START + i}"
       node.vm.network "forwarded_port", guest: 22, host: "#{2710 + i}"
+
+      if i == NUM_MASTER_NODE
+         node.vm.provision :ansible do |ansible|
+           ansible.inventory_path = "inventory.ini"
+           ansible.limit = "kubemasters"
+           ansible.playbook = "playbooks/provision/kubemaster.yml"
+         end
+       end
     end
   end
 
@@ -40,6 +48,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       node.vm.hostname = "kubenode0#{i}"
       node.vm.network :private_network, ip: IP_NW + "#{NODE_IP_START + i}"
       node.vm.network "forwarded_port", guest: 22, host: "#{2720 + i}"
+
+      if i == NUM_WORKER_NODE
+         node.vm.provision :ansible do |ansible|
+           ansible.inventory_path = "inventory.ini"
+           ansible.limit = "kubenodes"
+           ansible.playbook = "playbooks/provision/kubenode.yml"
+         end
+       end
     end
   end
 end
