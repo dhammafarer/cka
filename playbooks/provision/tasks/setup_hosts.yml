@@ -1,0 +1,7 @@
+---
+- name: Create entries in /etc/hosts.
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ hostvars[item].ansible_host }} {{ item }}"
+    state: present
+  loop: "{{ groups.all }}"

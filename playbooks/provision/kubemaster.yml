@@ -2,8 +2,8 @@
 - name: Provision kubemasters.
   hosts: all
   become: true
+  gather_facts: false
 
   tasks:
-    - name: Print a debug message.
-      ansible.builtin.debug:
-        msg: Provisioning kubemasters.
+    - name: Include tasks to setup hosts.
+      ansible.builtin.include_tasks: tasks/setup_hosts.yml
