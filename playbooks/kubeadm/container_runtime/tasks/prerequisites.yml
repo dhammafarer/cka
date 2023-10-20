@@ -1,0 +1,22 @@
+---
+- name: Ensure forwarding of IPv4 and bridged traffic in iptables are enabled.
+  block:
+    - name: Load modules required by k8s.
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+        persistent: present
+      loop:
+        - overlay
+        - br_netfilter
+
+    - name: Configure required sysctl parameters.
+      ansible.posix.sysctl:
+        name: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: true
+      loop:
+        - { key: net.bridge.bridge-nf-call-iptables, value: 1 }
+        - { key: net.bridge.bridge-nf-call-ip6tables, value: 1 }
+        - { key: net.ipv4.ip_forward, value: 1 }

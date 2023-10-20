@@ -1,0 +1,6 @@
+---
+- name: Provision all nodes.
+  hosts: all
+  become: true
+
+  tasks:

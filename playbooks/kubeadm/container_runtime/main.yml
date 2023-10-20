@@ -1,0 +1,12 @@
+---
+- name: Install container runtime.
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Include prerequisites.
+      ansible.builtin.include_tasks: tasks/prerequisites.yml
+
+  tasks:
+    - name: Include containerd tasks.
+      ansible.builtin.include_tasks: tasks/containerd.yml

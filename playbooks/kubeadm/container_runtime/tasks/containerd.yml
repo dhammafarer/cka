@@ -1,0 +1,41 @@
+---
+- name: Ensure dependencies are installed.
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg2
+      - curl
+    state: present
+
+- name: Ensure Docker apt repository is enabled.
+  block:
+    - name: Ensure keyring directory exists.
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+
+    - name: Download the key.
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Add Docker repo.
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [arch="amd64" signed-by=/etc/apt/keyrings/docker.asc]
+          https://download.docker.com/linux/debian {{ ansible_facts['distribution_release'] }} stable
+        filename: docker
+        state: present
+
+- name: Ensure containerd.io is installed.
+  ansible.builtin.apt:
+    update_cache: true
+    name: containerd.io
+    state: present
