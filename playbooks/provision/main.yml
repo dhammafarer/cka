@@ -23,3 +23,14 @@
           ansible.builtin.service:
             name: systemd-resolved
             state: restarted
+
+    - name: Disable swap.
+      ansible.builtin.command:
+        cmd: swapoff -a
+      changed_when: true
+
+    - name: Disable swap mount on boot.
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        replace: '# \1'
