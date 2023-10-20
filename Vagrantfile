@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
          node.vm.provision :ansible do |ansible|
            ansible.inventory_path = "inventory.ini"
            ansible.limit = "kubemasters"
-           ansible.playbook = "playbooks/provision/kubemaster.yml"
+           ansible.playbook = "playbooks/provision/main.yml"
          end
        end
     end
@@ -53,7 +53,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
          node.vm.provision :ansible do |ansible|
            ansible.inventory_path = "inventory.ini"
            ansible.limit = "kubenodes"
-           ansible.playbook = "playbooks/provision/kubenode.yml"
+           ansible.playbook = "playbooks/provision/main.yml"
          end
        end
     end

@@ -1,0 +1,25 @@
+---
+- name: Provision all nodes.
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Create entries in /etc/hosts.
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars[item].ansible_host }} {{ item }}"
+        state: present
+      loop: "{{ groups.all }}"
+
+    - name: Setup DNS.
+      block:
+        - name: Set DNS server in /etc/systemd/resolved.conf
+          ansible.builtin.lineinfile:
+            path: /etc/systemd/resolved.conf
+            regex: "^DNS="
+            line: "DNS=8.8.8.8"
+
+        - name: Ensure systemd-resolved service is restarted.
+          ansible.builtin.service:
+            name: systemd-resolved
+            state: restarted

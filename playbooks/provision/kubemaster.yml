@@ -1,6 +1,6 @@
 ---
 - name: Provision kubemasters.
-  hosts: all
+  hosts: kubemasters
   become: true
   gather_facts: false
 
