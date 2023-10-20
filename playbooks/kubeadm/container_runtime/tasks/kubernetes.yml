@@ -1,0 +1,53 @@
+---
+- name: Ensure dependencies are installed.
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg2
+      - curl
+    state: present
+
+- name: Ensure Kubernetes apt repository is enabled.
+  block:
+    - name: Ensure keyring directory exists.
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+
+    - name: Download the key.
+      ansible.builtin.get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
+        dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Add Kubernetes repo.
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc]
+          https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /
+        filename: kubernetes
+        state: present
+
+- name: Ensure kubernetes packages are installed.
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: present
+
+- name: Hold kubeadm
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl

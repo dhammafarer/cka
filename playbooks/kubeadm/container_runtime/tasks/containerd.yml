@@ -1,4 +1,39 @@
 ---
+- name: Ensure dependencies are installed.
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg2
+      - curl
+    state: present
+
+- name: Ensure Docker apt repository is enabled.
+  block:
+    - name: Ensure keyring directory exists.
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+
+    - name: Download the key.
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/keyrings/docker-apt-keyring.asc
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Add Docker repo.
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [arch="amd64" signed-by=/etc/apt/keyrings/docker-apt-keyring.asc]
+          https://download.docker.com/linux/debian {{ ansible_facts['distribution_release'] }} stable
+        filename: docker
+        state: present
+
 - name: Ensure containerd.io is installed.
   ansible.builtin.apt:
     update_cache: true
@@ -44,7 +79,6 @@
     path: /tmp/containerd_config.toml
     state: absent
     line: '            SystemdCgroup = false'
-  notify: Restart containerd.
   changed_when: false
 
 - name: Copy config.toml to /etc/containerd
@@ -53,7 +87,6 @@
     src: /tmp/containerd_config.toml
     dest: /etc/containerd/config.toml
     mode: "0644"
-  notify: Restart containerd.
 
 - name: Cleanup temporary file
   ansible.builtin.file:
@@ -61,5 +94,7 @@
     state: absent
   changed_when: false
 
-- name: Ensure containerd is restarted immediately if necessary.
-  ansible.builtin.meta: flush_handlers
+- name: Restart containerd
+  ansible.builtin.service:
+    name: containerd
+    state: restarted
