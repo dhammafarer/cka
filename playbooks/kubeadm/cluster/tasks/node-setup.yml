@@ -1,0 +1,5 @@
+---
+- name: Join node to Kubernetes control plane.
+  ansible.builtin.command:
+    cmd: "{{ kubernetes_join_command }}"
+    creates: /etc/kubernetes/kubelet.conf

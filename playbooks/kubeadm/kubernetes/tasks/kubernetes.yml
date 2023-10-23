@@ -51,3 +51,9 @@
     - kubelet
     - kubeadm
     - kubectl
+
+- name: Alias kubectl to k.
+  ansible.builtin.lineinfile:
+    path: "~/.bashrc"
+    line: 'alias k="kubectl"'
+    state: present
