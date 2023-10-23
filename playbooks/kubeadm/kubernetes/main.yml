@@ -1,0 +1,8 @@
+---
+- name: Install kubernetes.
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Include kubernetes tasks.
+      ansible.builtin.include_tasks: tasks/kubernetes.yml

@@ -10,6 +10,3 @@
   tasks:
     - name: Include containerd tasks.
       ansible.builtin.include_tasks: tasks/containerd.yml
-
-    - name: Include kubernetes tasks.
-      ansible.builtin.include_tasks: tasks/kubernetes.yml

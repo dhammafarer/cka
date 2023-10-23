@@ -1,6 +1,10 @@
 ---
-- name: Provision all nodes.
-  hosts: all
-  become: true
+- name: Ensure container runtime is installed.
+  ansible.builtin.import_playbook: container_runtime/main.yml
 
-  tasks:
+- name: Ensure kubernetes is installed.
+  ansible.builtin.import_playbook: kubernetes/main.yml
+
+- name: Ensure cluster is created.
+  ansible.builtin.import_playbook: cluster/main.yml
+
