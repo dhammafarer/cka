@@ -7,4 +7,3 @@
 
 - name: Ensure cluster is created.
   ansible.builtin.import_playbook: cluster/main.yml
-

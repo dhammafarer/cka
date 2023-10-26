@@ -6,3 +6,13 @@
   tasks:
     - name: Include kubernetes tasks.
       ansible.builtin.include_tasks: tasks/kubernetes.yml
+
+    - name: Ensure pip is installed.
+      ansible.builtin.apt:
+        name: python3-pip
+        state: present
+
+    - name: Ensure k8s dependencies are installed.
+      ansible.builtin.pip:
+        name: openshift
+        state: present
