@@ -1,0 +1,5 @@
+---
+roles:
+  - name: ohmyzsh
+    src: https://github.com/dhammafarer/ansible-role-ohmyzsh
+    version: main

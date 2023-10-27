@@ -5,5 +5,6 @@
   gather_facts: false
 
   tasks:
-    - name: Include tasks to setup hosts.
-      ansible.builtin.include_tasks: tasks/setup_hosts.yml
+    - name: Install ohmyzsh.
+      ansible.builtin.include_role:
+        name: ohmyzsh

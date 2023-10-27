@@ -4,12 +4,22 @@
   become: true
 
   tasks:
+    - name: Taint kubenode01 "foo"
+      kubernetes.core.k8s_taint:
+        state: present
+        name: kubenode01
+        taints:
+          - effect: NoSchedule
+            key: "key1"
+            value: "value1"
+
     - name: Create hello-k8s resources and wait until they are Ready.
       kubernetes.core.k8s:
         state: present
         definition: "{{ lookup('file', 'files/' + item) }}"
         wait: true
       loop:
+        - hello-k8s-node.yml
         - hello-k8s-deployment.yml
         - hello-k8s-service.yml
 
@@ -19,10 +29,6 @@
         name: hello-k8s
         namespace: default
       register: svc
-
-    - name: Print the full svc variable.
-      ansible.builtin.debug:
-        var: svc
 
     - name: Set service NodePort as a variable.
       ansible.builtin.set_fact:

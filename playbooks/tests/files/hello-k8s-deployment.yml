@@ -16,6 +16,21 @@ spec:
       labels:
         app: hello-k8s
     spec:
+      tolerations:
+        - effect: NoSchedule
+          key: "key1"
+          operator: Equal
+          value: "value1"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - kubenode01
+                      - kubenode02
       containers:
         - name: hello-k8s
           image: paulbouwer/hello-kubernetes:1.5
